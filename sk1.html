@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Query Tool</title>
+    <script src="https://js.arcgis.com/4.24/"></script>
+</head>
+<body>
+    <h1>Simple Query Tool</h1>
+    <form id="queryForm">
+        <label for="field">Select a Field:</label>
+        <select id="field">
+            <option value="OBJECTID">Field Name 1</option>
+            <option value="BeginDate">Field Name 2</option>
+            <!-- Add more field options here -->
+        </select>
+        <br>
+        <label for="operator">Select an Operator:</label>
+        <select id="operator">
+            <option value="=">Equal to</option>
+            <option value=">">Greater than</option>
+            <option value="<">Less than</option>
+            <!-- Add more operator options here -->
+        </select>
+        <br>
+        <label for="value">Enter a Value:</label>
+        <input type="text" id="value">
+        <br>
+        <button type="button" onclick="performQuery()">Submit</button>
+    </form>
+    <div id="queryResults"></div>
+
+    <script>
+        function performQuery() {
+            const field = document.getElementById('field').value;
+            const operator = document.getElementById('operator').value;
+            const value = document.getElementById('value').value;
+
+            const queryUrl = `http://maps.vtrans.vermont.gov/arcgis/rest/services/VAMIS/VAMIS/FeatureServer/2/query?where=${field}${operator}'${value}'&outFields=*&f=json`;
+
+            // Perform the query using the URL and display the results
+            fetch(queryUrl)
+                .then(response => response.json())
+                .then(data => {
+                    // Display the results in the queryResults div
+                    document.getElementById('queryResults').innerHTML = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    console.error('Error performing query:', error);
+                });
+        }
+    </script>
+</body>
+</html>
